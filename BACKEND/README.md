@@ -77,3 +77,75 @@ Register a new user in the cab booking system.
 - Password is hashed using bcrypt
 - JWT token is generated for authentication
 - Password is excluded from user responses
+
+// ...existing code...
+
+## User Login Endpoint 🔑
+
+### `POST /users/login`
+
+Authenticate a user and get access token.
+
+#### Request Body 📝
+
+```json
+{
+  "email": "john@email.com",    // registered email
+  "password": "123456"          // account password
+}
+```
+
+#### Response 📨
+
+**Success Response (201 Created)**
+```json
+{
+  "token": "jwt_token_here",
+  "user": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john@email.com",
+    "_id": "user_id_here"
+  }
+}
+```
+
+**Error Responses**
+
+*Validation Error (400 Bad Request)*
+```json
+{
+  "error": [
+    {
+      "msg": "Invalid Email",
+      "path": "email"
+    },
+    {
+      "msg": "password must be at least 6 character",
+      "path": "password"
+    }
+  ]
+}
+```
+
+*Authentication Error (401 Unauthorized)*
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+### Validation Rules ✅
+
+- Email must be valid format
+- Password must be minimum 6 characters
+- Both email and password are required fields
+
+### Security Features 🔒
+
+- Password is compared using bcrypt
+- JWT token is generated upon successful authentication
+- Password is never returned in response
+- Invalid credentials return generic error message

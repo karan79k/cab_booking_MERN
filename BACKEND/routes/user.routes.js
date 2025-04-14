@@ -11,5 +11,13 @@ router.post('/register',[
     ,
     userController.registerUser
 )
+//login user 
 
+router.post('/login',[
+    body('email').isEmail().withMessage('Invalid Email'),
+    body('password').isLength().withMessage('password must be at least 6 character')
+],
+    userController.loginUser
+
+)
 module.exports=router;

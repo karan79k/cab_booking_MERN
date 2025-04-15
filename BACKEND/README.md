@@ -235,16 +235,16 @@ Register a new captain in the cab booking system.
 ```json
 {
   "fullname": {
-    "firstname": "John",     // minimum 3 characters
-    "lastname": "Doe"        // minimum 3 characters
+    "firstname": "John",     // minimum 3 characters, required
+    "lastname": "Doe"        // minimum 3 characters, required
   },
-  "email": "john@email.com", // valid email format
-  "password": "123456",      // minimum 6 characters
+  "email": "john@email.com", // unique, valid format, required
+  "password": "123456",      // minimum 6 characters, required
   "vehicle": {
-    "color": "Black",       // required
-    "plate": "ABC-123",     // required
-    "capacity": 4,          // required
-    "type": "Sedan"         // required
+    "color": "Black",        // minimum 3 characters, required
+    "plate": "ABC-123",      // minimum 3 characters, required
+    "capacity": 4,           // minimum 1, required
+    "type": "Car"           // enum: Car, Bike, Auto, required
   }
 }
 ```
@@ -266,7 +266,7 @@ Register a new captain in the cab booking system.
       "color": "Black",
       "plate": "ABC-123",
       "capacity": 4,
-      "type": "Sedan"
+      "type": "Car"
     }
   }
 }
@@ -285,6 +285,14 @@ Register a new captain in the cab booking system.
     {
       "msg": "All fields are required"
     }
+     {
+      "msg": "First name should be at least 3 characters long",
+      "path": "fullname.firstname"
+    },
+    {
+      "msg": "Type should be either Car, Bike or Auto",
+      "path": "vehicle.type"
+    }
   ]
 }
 ```
@@ -302,10 +310,10 @@ Register a new captain in the cab booking system.
 - Password must be minimum 6 characters
 - First name and last name are required
 - Vehicle details are mandatory:
-  - Color
-  - License plate number
-  - Seating capacity
-  - Vehicle type
+  - Color: minimum 3 characters, required
+  - Plate number: minimum 3 characters, required
+  - Capacity: minimum 1 passenger, required
+  - Type: must be one of ['Car', 'Bike', 'Auto'], required
 
 ### Security Features 🔒
 

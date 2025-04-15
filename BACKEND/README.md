@@ -78,8 +78,6 @@ Register a new user in the cab booking system.
 - JWT token is generated for authentication
 - Password is excluded from user responses
 
-// ...existing code...
-
 ## User Login Endpoint 🔑
 
 ### `POST /users/login`
@@ -149,3 +147,79 @@ Authenticate a user and get access token.
 - JWT token is generated upon successful authentication
 - Password is never returned in response
 - Invalid credentials return generic error message
+
+## User Profile Endpoint 👨‍💼
+
+### `GET /users/profile`
+
+Get the authenticated user's profile information.
+
+#### Request Headers 🔓
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+#### Response 📨
+
+**Success Response (200 OK)**
+```json
+{
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john@email.com",
+  "_id": "user_id_here"
+}
+```
+
+**Error Response**
+
+*Unauthorized (401)*
+```json
+{
+  "message": "Authentication required"
+}
+```
+
+### Security Features 🔒
+- Requires valid JWT token
+- Protected route using auth middleware
+- Password field excluded from response
+
+## User Logout Endpoint 🚪
+
+### `GET /users/logout`
+
+Logout the currently authenticated user.
+
+#### Request Headers 🔓
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+#### Response 📨
+
+**Success Response (200 OK)**
+```json
+{
+  "message": "Logged Out"
+}
+```
+
+**Error Response**
+
+*Unauthorized (401)*
+```json
+{
+  "message": "Authentication required"
+}
+```
+
+### Security Features 🔒
+- Clears authentication cookie
+- Blacklists the current JWT token
+- Requires valid JWT token
+- Protected route using auth middleware

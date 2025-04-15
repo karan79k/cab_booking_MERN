@@ -321,3 +321,157 @@ Register a new captain in the cab booking system.
 - JWT token is generated for authentication
 - Password is excluded from responses
 - Unique email validation
+
+## Captain Login Endpoint 🔑
+
+### `POST /captains/login`
+
+Authenticate a captain and get access token.
+
+#### Request Body 📝
+
+```json
+{
+  "email": "john@email.com",    // registered email
+  "password": "123456"          // account password
+}
+```
+
+#### Response 📨
+
+**Success Response (201 Created)**
+```json
+{
+  "token": "jwt_token_here",
+  "captain": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john@email.com",
+    "_id": "captain_id_here",
+    "vehicle": {
+      "color": "Black",
+      "plate": "ABC-123",
+      "capacity": 4,
+      "type": "Car"
+    },
+    "status": "inactive"
+  }
+}
+```
+
+**Error Responses**
+
+*Validation Error (400 Bad Request)*
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email",
+      "path": "email"
+    }
+  ]
+}
+```
+
+*Authentication Error (401 Unauthorized)*
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+## Captain Profile Endpoint 👨‍✈️
+
+### `GET /captains/profile`
+
+Get the authenticated captain's profile information.
+
+#### Request Headers 🔓
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+#### Response 📨
+
+**Success Response (200 OK)**
+```json
+{
+  "captain": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john@email.com",
+    "_id": "captain_id_here",
+    "vehicle": {
+      "color": "Black",
+      "plate": "ABC-123",
+      "capacity": 4,
+      "type": "Car",
+      "location": {
+        "lat": null,
+        "long": null
+      }
+    },
+    "status": "inactive"
+  }
+}
+```
+
+**Error Response**
+
+*Unauthorized (401)*
+```json
+{
+  "message": "No token provided"
+}
+```
+
+## Captain Logout Endpoint 🚪
+
+### `GET /captains/logout`
+
+Logout the currently authenticated captain.
+
+#### Request Headers 🔓
+
+```
+Authorization: Bearer <jwt_token>
+```
+
+#### Response 📨
+
+**Success Response (200 OK)**
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+**Error Responses**
+
+*No Token (401 Unauthorized)*
+```json
+{
+  "message": "No token provided"
+}
+```
+
+*Invalid Token (401 Unauthorized)*
+```json
+{
+  "message": "Token has been invalidated"
+}
+```
+
+### Security Features for Captain Routes 🔒
+
+- JWT token required for protected routes
+- Token blacklisting on logout
+- Cookie-based token storage
+- Password excluded from responses
+- Real-time status tracking
+- Location tracking support

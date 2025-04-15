@@ -1,0 +1,20 @@
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2ZlY2U4OGNmMmI3Mzk2YzU3ZWQ5OGYiLCJpYXQiOjE3NDQ3NTIyNjQsImV4cCI6MTc0NDgzODY2NH0.SElXnM3Tu-Lg7usyltxSq3bcBabMhZ_kj96W_adYg8I",
+    "captain": {
+        "fullname": {
+            "firstname": "John wick",
+            "lastname": "Doeeeed"
+        },
+        "email": "john.doe@example.com",
+        "password": "$2b$10$vAjcwmetU7.ZoA72qL/lLeEXlvKfBaeYghfHWJ2CKrZPCGBJG.CVi",
+        "status": "inactive",
+        "vehicle": {
+            "color": "Black",
+            "plate": "XYZ-1234",
+            "capacity": 4,
+            "type": "Car"
+        },
+        "_id": "67fece88cf2b7396c57ed98f",
+        "__v": 0
+    }
+}

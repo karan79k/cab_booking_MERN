@@ -223,3 +223,93 @@ Authorization: Bearer <jwt_token>
 - Blacklists the current JWT token
 - Requires valid JWT token
 - Protected route using auth middleware
+
+## Captain Registration Endpoint 🚖
+
+### `POST /captains/register`
+
+Register a new captain in the cab booking system.
+
+#### Request Body 📝
+
+```json
+{
+  "fullname": {
+    "firstname": "John",     // minimum 3 characters
+    "lastname": "Doe"        // minimum 3 characters
+  },
+  "email": "john@email.com", // valid email format
+  "password": "123456",      // minimum 6 characters
+  "vehicle": {
+    "color": "Black",       // required
+    "plate": "ABC-123",     // required
+    "capacity": 4,          // required
+    "type": "Sedan"         // required
+  }
+}
+```
+
+#### Response 📨
+
+**Success Response (201 Created)**
+```json
+{
+  "token": "jwt_token_here",
+  "captain": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john@email.com",
+    "_id": "captain_id_here",
+    "vehicle": {
+      "color": "Black",
+      "plate": "ABC-123",
+      "capacity": 4,
+      "type": "Sedan"
+    }
+  }
+}
+```
+
+**Error Responses**
+
+*Validation Error (400 Bad Request)*
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email",
+      "path": "email"
+    },
+    {
+      "msg": "All fields are required"
+    }
+  ]
+}
+```
+
+*Duplicate Registration (400 Bad Request)*
+```json
+{
+  "message": "Captain already exists"
+}
+```
+
+### Validation Rules ✅
+
+- Email must be valid format
+- Password must be minimum 6 characters
+- First name and last name are required
+- Vehicle details are mandatory:
+  - Color
+  - License plate number
+  - Seating capacity
+  - Vehicle type
+
+### Security Features 🔒
+
+- Password is hashed using bcrypt
+- JWT token is generated for authentication
+- Password is excluded from responses
+- Unique email validation

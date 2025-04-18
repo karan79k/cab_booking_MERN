@@ -1,23 +1,42 @@
-import React, { useState } from "react";
+import React, { useState } from 'react' // Remove 'use'
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Fix Navigate import
+import axios from 'axios'
+import { UserDataContext } from '../context/UserContext';
 
-export default function Login() {
+export default function UserLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userData, setUserData] = useState([]);
-  const handleSubmit = (e) => {
+  
+  const navigate = useNavigate(); // Fix navigation hook name
+  const { user, setUser } = React.useContext(UserDataContext);
+   
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setUserData({
-      email: email,
-      password: password,
-    })
-    console.log(userData);
+    
+      const userData = {
+        email,
+        password,
+      };
+      
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/users/login`,
+        userData
+      );
+
+      if(response.status === 201) {
+        const data = response.data;
+        setUser(data.user);
+        localStorage.setItem("token", data.token); // Store token in local storage
+        navigate('/home'); // Use lowercase navigate
+      }
 
 
     setEmail("");
     setPassword("");
-  };
+  }
+    
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ fontFamily: 'Poppins, sans-serif' }}>

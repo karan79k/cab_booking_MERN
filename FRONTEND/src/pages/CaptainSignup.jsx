@@ -1,9 +1,14 @@
 import React, { useState } from 'react'
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios'
+import { UserDataContext } from '../context/UserContext';
 
 const CaptainSignup = () => {
-  // State management
+  const navigate = useNavigate();
+  const { setUser } = React.useContext(UserDataContext);
+  
+  // Fixed initial state
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -13,7 +18,7 @@ const CaptainSignup = () => {
       color: '',
       plate: '',
       capacity: '',
-      type: 'Car' // default value
+      type: 'Car'
     }
   });
 
@@ -37,10 +42,55 @@ const CaptainSignup = () => {
     }
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  // Fixed handleSubmit function
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Captain Signup Data:', formData);
+    try {
+      const newCaptain = {
+        fullname: {
+          firstname: formData.firstname,
+          lastname: formData.lastname
+        },
+        email: formData.email,
+        password: formData.password,
+        vehicle: {
+          color: formData.vehicle.color,
+          plate: formData.vehicle.plate,
+          capacity: formData.vehicle.capacity,
+          type: formData.vehicle.type
+        }
+      };
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/captains/register`,
+        newCaptain
+      );
+
+      if (response.status === 201) {
+        const data = response.data;
+        setUser(data.captain);
+        localStorage.setItem("token", data.token);
+        
+        // Clear form fields
+        setFormData({
+          firstname: '',
+          lastname: '',
+          email: '',
+          password: '',
+          vehicle: {
+            color: '',
+            plate: '',
+            capacity: '',
+            type: 'Car'
+          }
+        });
+        
+        navigate('/home');
+      }
+    } catch (error) {
+      console.error('Registration error:', error.response?.data || error.message);
+      // Add error handling UI here if needed
+    }
   };
 
   return (

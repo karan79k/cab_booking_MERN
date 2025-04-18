@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react' // Remove 'use'
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Fix Navigate import
+import axios from 'axios'
+import { UserDataContext } from '../context/UserContext';
 
 const UserSignup = () => {
   // Individual states for each field
@@ -8,17 +10,45 @@ const UserSignup = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
+  const navigate = useNavigate(); // Fix navigation hook name
+  const { user, setUser } = React.useContext(UserDataContext);
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  // Handle form submission with error handling
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Data:', { firstName, lastName, email, password });
-    
-    // Clear form fields after submission
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setPassword('');
+    try {
+      const newUser = {
+        fullname: {
+          firstname: firstName,
+          lastname: lastName
+        },
+        email,
+        password,
+      };
+      
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/users/register`,
+        newUser
+      );
+
+      if (response.status === 201) {
+        const data = response.data;
+        setUser(data.user);
+        localStorage.setItem("token", data.token); // Store token in local storage
+        
+        // Clear form fields
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setPassword('');
+        
+        navigate('/home'); // Use lowercase navigate
+      }
+    } catch (error) {
+      console.error('Registration error:', error.response?.data || error.message);
+      // Add error handling here if needed
+    }
   };
 
   return (
@@ -97,7 +127,7 @@ const UserSignup = () => {
             type="submit"
             className="w-full bg-indigo-600 text-white py-2 rounded-md font-normal hover:bg-indigo-700 transition-all text-lg"
           >
-            Sign Up
+            Create Account
           </motion.button>
         </form>
 

@@ -2,13 +2,12 @@ import React, { useState } from 'react'
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios'
-import { UserDataContext } from '../context/UserContext';
+import { CaptainDataContext } from '../context/CaptainContext';
 
 const CaptainSignup = () => {
   const navigate = useNavigate();
-  const { setUser } = React.useContext(UserDataContext);
+  const { setCaptain } = React.useContext(CaptainDataContext);
   
-  // Fixed initial state
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -22,7 +21,6 @@ const CaptainSignup = () => {
     }
   });
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name.includes('vehicle.')) {
@@ -42,7 +40,6 @@ const CaptainSignup = () => {
     }
   };
 
-  // Fixed handleSubmit function
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -53,12 +50,7 @@ const CaptainSignup = () => {
         },
         email: formData.email,
         password: formData.password,
-        vehicle: {
-          color: formData.vehicle.color,
-          plate: formData.vehicle.plate,
-          capacity: formData.vehicle.capacity,
-          type: formData.vehicle.type
-        }
+        vehicle: formData.vehicle
       };
 
       const response = await axios.post(
@@ -67,37 +59,20 @@ const CaptainSignup = () => {
       );
 
       if (response.status === 201) {
-        const data = response.data;
-        setUser(data.captain);
-        localStorage.setItem("token", data.token);
-        
-        // Clear form fields
-        setFormData({
-          firstname: '',
-          lastname: '',
-          email: '',
-          password: '',
-          vehicle: {
-            color: '',
-            plate: '',
-            capacity: '',
-            type: 'Car'
-          }
-        });
-        
-        navigate('/home');
+        const { captain, token } = response.data;
+        setCaptain(captain);
+        localStorage.setItem("token", token);
+        navigate('/captainhome');
       }
     } catch (error) {
       console.error('Registration error:', error.response?.data || error.message);
-      // Add error handling UI here if needed
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <div className="max-w-sm w-full bg-white rounded-2xl p-6">
-        {/* Logo */}
-         <Link to="/">
+        <Link to="/">
         <div className="flex flex-col justify-center items-center mb-6 space-x-2">
           <div className="flex justify-center items-center space-x-2">
             <div className="w-10 h-10 bg-[#02733E] rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -113,7 +88,6 @@ const CaptainSignup = () => {
         <h2 className="text-2xl font-bold text-left text-gray-800 mb-4">Captain Sign Up</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Personal Information */}
           <div>
             <label htmlFor="firstname" className="block text-sm font-[10px] text-gray-700 mb-1">First Name</label>
             <input
@@ -162,7 +136,6 @@ const CaptainSignup = () => {
             />
           </div>
 
-          {/* Vehicle Information */}
           <div className="pt-4 border-t">
             <h3 className="text-lg font-semibold text-gray-700 mb-3">Vehicle Details</h3>
             

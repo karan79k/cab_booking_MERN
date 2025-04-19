@@ -1,12 +1,76 @@
-# React + Vite
+# EasyRide Frontend Documentation 🚗
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Core Features
 
-Currently, two official plugins are available:
+### Authentication System 🔐
+- Separate flows for Users and Captains
+- Protected routes using wrapper components
+- JWT token management
+- Persistent login state
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Context Management 🔄
+- `UserContext`: Manages user authentication state
+- `CaptainContext`: Manages captain authentication state
 
-## Expanding the ESLint configuration
+### Route Structure 🛣️
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+#### Public Routes
+```jsx
+/                 - Start page
+/userlogin       - User login
+/usersignup      - User registration
+/captainlogin    - Captain login
+/captainsignup   - Captain registration
+```
+
+#### Protected Routes
+```jsx
+/home           - User dashboard (requires user auth)
+/user/logout    - User logout (requires user auth)
+/captainhome    - Captain dashboard (requires captain auth)
+/captain/logout - Captain logout (requires captain auth)
+```
+
+### Security Features 🛡️
+- Token-based authentication
+- Protected route wrappers
+- Automatic logout on token expiry
+- Local storage management
+
+### Component Structure 📦
+- Auth components (Login/Signup)
+- Protected wrappers
+- Context providers
+- Home components
+
+### Styling 🎨
+- TailwindCSS for styling
+- Framer Motion for animations
+- Responsive design
+- Custom color schemes for user/captain
+
+## Setup ⚙️
+
+```bash
+npm install
+npm run dev
+```
+
+### Environment Variables
+```env
+VITE_BASE_URL=http://your-backend-url
+```
+
+## Tech Stack 💻
+- React + Vite
+- React Router v7
+- Axios
+- TailwindCSS
+- Framer Motion
+
+## Authentication Flow 🔑
+1. User/Captain logs in
+2. JWT token stored in localStorage
+3. Context updated with user/captain data
+4. Protected routes become accessible
+5. Token included in API requests

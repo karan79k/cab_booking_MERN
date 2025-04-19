@@ -474,4 +474,4 @@ Authorization: Bearer <jwt_token>
 - Cookie-based token storage
 - Password excluded from responses
 - Real-time status tracking
-- Location tracking support
+- Location tracking support 

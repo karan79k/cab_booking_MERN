@@ -1,25 +1,25 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { UserDataContext } from '../context/UserContext';
+import { CaptainDataContext } from '../context/CaptainContext';
 import axios from 'axios';
 
-const UserProtectWrapper = ({children}) => {
+const CaptainProtectWrapper = ({children}) => {
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
-    const { user, setUser } = React.useContext(UserDataContext);
+    const { captain, setCaptain } = React.useContext(CaptainDataContext);
     const [isLoading, setIsLoading] = React.useState(true);
 
     useEffect(() => {
         const checkAuth = async () => {
-            if (!token) {
+            if (!token || !captain?.vehicle) {
                 localStorage.removeItem("token");
-                navigate('/userlogin');
+                navigate('/captainlogin');
                 return;
             }
 
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_BASE_URL}/users/profile`,
+                    `${import.meta.env.VITE_BASE_URL}/captains/profile`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -28,18 +28,18 @@ const UserProtectWrapper = ({children}) => {
                 );
 
                 if (response.status === 200) {
-                    setUser(response.data.user);
+                    setCaptain(response.data.captain);
                     setIsLoading(false);
                 }
             } catch (error) {
                 console.error(error);
                 localStorage.removeItem("token");
-                navigate('/userlogin');
+                navigate('/captainlogin');
             }
         };
 
         checkAuth();
-    }, [token, navigate, setUser]); // Remove user from dependencies
+    }, [token, captain, navigate, setCaptain]);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -48,4 +48,4 @@ const UserProtectWrapper = ({children}) => {
     return <>{children}</>;
 }
 
-export default UserProtectWrapper
+export default CaptainProtectWrapper

@@ -1,65 +1,68 @@
-import React, { useState } from 'react' // Remove 'use'
+import React, { useState } from 'react';
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom"; // Fix Navigate import
-import axios from 'axios'
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
 import { UserDataContext } from '../context/UserContext';
 
 export default function UserLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // Add error state
   
-  const navigate = useNavigate(); // Fix navigation hook name
-  const { user, setUser } = React.useContext(UserDataContext);
-   
+  const navigate = useNavigate();
+  const { setUser } = React.useContext(UserDataContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(""); // Clear previous errors
     
-      const userData = {
-        email,
-        password,
-      };
-      
+    try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/users/login`,
-        userData
+        { email, password }
       );
 
-      if(response.status === 201) {
-        const data = response.data;
-        setUser(data.user);
-        localStorage.setItem("token", data.token); // Store token in local storage
-        navigate('/home'); // Use lowercase navigate
+      if (response.status === 201) { // Change to 200 for successful login
+        const { user, token } = response.data;
+        setUser(user);
+        localStorage.setItem("token", token);
+        setEmail("");
+        setPassword("");
+        navigate('/home');
       }
-
-
-    setEmail("");
-    setPassword("");
-  }
-    
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error.response?.data?.message || "Invalid email or password");
+      setPassword(""); // Clear password on error
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <div className="max-w-sm w-full bg-white rounded-2xl p-6">
         {/* Logo */}
         <Link to="/">
-        <div className="flex flex-col justify-center items-center mb-6 space-x-2">
-          <div className="flex justify-center items-center space-x-2">
-            <div className="w-10 h-10 bg-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-sm">
-              ER
+          <div className="flex flex-col justify-center items-center mb-6 space-x-2">
+            <div className="flex justify-center items-center space-x-2">
+              <div className="w-10 h-10 bg-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-sm">
+                ER
+              </div>
+              <h1 className="text-xl font-extrabold tracking-wide">EasyRide</h1>
             </div>
-            <h1 className="text-xl font-extrabold tracking-wide">EasyRide</h1>
+            <div className="w-full text-center mt-[-10px] ml-[-25px]"> 
+              <p className="text-xs text-gray-500">user</p>
+            </div>
           </div>
-          <div className="w-full text-center mt-[-10px] ml-[-25px]"> 
-          
-            <p className="text-xs text-gray-500">user</p>
-          </div>
-        </div>
         </Link>
 
-
-        {/* Sign In Title */}
         <h2 className="text-2xl font-bold text-left text-gray-800 mb-4">Log In</h2>
+
+        {/* Add error message display */}
+        {error && (
+          <div className="mb-4 text-red-500 text-sm text-center">
+            {error}
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -98,15 +101,9 @@ export default function UserLogin() {
         </form>
 
         {/* Footer Links */}
-
         <div className="flex justify-end items-right mt-4 text-[1rem] text-gray-500">
-
-          
           <div className="flex justify-end items-center text-[1rem] text-gray-800"> New Here?<Link to='/usersignup'><button className="font-normal text-indigo-600 hover:underline cursor-pointer"> Create new Account</button> </Link></div>
-           
-         
         </div>
-
 
         {/* Sign In as Captain Button */}
         <Link to="/captainlogin">

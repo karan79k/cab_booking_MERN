@@ -1,22 +1,38 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios'
+import { CaptainDataContext } from '../context/CaptainContext';
 
 export default function CaptainLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [captainData, setCaptainData] = useState([]);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const { captain, setCaptain } = React.useContext(CaptainDataContext);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setCaptainData({
-      email: email,
-      password: password,
-    })
-    console.log(captainData);
+    setError("");
     
-    setEmail("");
-    setPassword("");
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/captains/login`,
+        { email, password }
+      );
+
+      if (response.status === 201) {
+        const { captain, token } = response.data;
+        setCaptain(captain);
+        localStorage.setItem("token", token);
+        navigate('/captainhome');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error.response?.data?.message || "Login failed. Please try again.");
+      setPassword(""); // Clear password on error
+    }
   };
 
   return (
@@ -63,6 +79,9 @@ export default function CaptainLogin() {
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-400 focus:outline-none text-sm"
             />
           </div>
+
+          {/* Error Message */}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           {/* Submit Button - Updated colors */}
           <motion.button

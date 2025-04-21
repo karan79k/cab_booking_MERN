@@ -1,6 +1,6 @@
 # EasyRide Frontend Documentation 🚗
 
-## Core Features
+## Core Features til now
 
 ### Authentication System 🔐
 - Separate flows for Users and Captains
@@ -58,7 +58,7 @@ npm run dev
 
 ### Environment Variables
 ```env
-VITE_BASE_URL=http://your-backend-url
+VITE_BASE_URL=http://your-backend-url 
 ```
 
 ## Tech Stack 💻

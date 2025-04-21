@@ -55,9 +55,25 @@ module.exports.getUserProfile = async (req,res,next)=>{
     res.status(200).json(req.user)
 }
 
-module.exports.logoutUser= async (req,res,next)=>{
-    res.clearCookie('token');
-    const token = req.cookies.token || req.headers.authorization.split(' ')[1];
-    await blacklistTokenmodel.create({token});
-    res.status(200).json({message:'Logged Out'})
+module.exports.logoutUser = async (req, res, next) => {
+    try {
+        // Get token from authorization header
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: 'No token provided' });
+        }
+
+        const token = authHeader.split(' ')[1];
+        
+        // Blacklist the token
+        await blacklistTokenmodel.create({ token });
+        
+        // Clear cookie if it exists
+        res.clearCookie('token');
+        
+        res.status(200).json({ message: 'Logged Out' });
+    } catch (error) {
+        console.error('Logout error:', error);
+        res.status(500).json({ message: 'Logout failed' });
+    }
 }

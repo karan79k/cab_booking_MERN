@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import { CaptainDataContext } from '../context/CaptainContext';
+import Logo from './logo'
 
 export default function CaptainLogin() {
   const [email, setEmail] = useState("");
@@ -38,21 +39,7 @@ export default function CaptainLogin() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <div className="max-w-sm w-full bg-white rounded-2xl p-6">
-        {/* Logo - Updated colors to match signup */}
-        <Link to="/">
-        <div className="flex flex-col justify-center items-center mb-6 space-x-2">
-          <div className="flex justify-center items-center space-x-2">
-            <div className="w-10 h-10 bg-[#02733E] rounded-full flex items-center justify-center text-white font-bold text-sm">
-              ER
-            </div>
-            <h1 className="text-xl font-extrabold tracking-wide">EasyRide</h1>
-          </div>
-          <div className="w-full text-center mt-[-10px] ml-[-10px]">
-            <p className="text-xs text-gray-500">captain</p>
-          </div>
-        </div>
-        </Link>
-        {/* Sign In Title */}
+        <Logo userType="captain" />
         <h2 className="text-2xl font-bold text-left text-gray-800 mb-4">Log In</h2>
 
         {/* Form - Updated input styles */}

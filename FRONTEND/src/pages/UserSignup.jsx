@@ -1,20 +1,19 @@
-import React, { useState } from 'react' // Remove 'use'
+import React, { useState } from 'react';
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom"; // Fix Navigate import
-import axios from 'axios'
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
 import { UserDataContext } from '../context/UserContext';
+import Logo from './logo';
 
 const UserSignup = () => {
-  // Individual states for each field
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
-  const navigate = useNavigate(); // Fix navigation hook name
+  const navigate = useNavigate();
   const { user, setUser } = React.useContext(UserDataContext);
 
-  // Handle form submission with error handling
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -35,45 +34,27 @@ const UserSignup = () => {
       if (response.status === 201) {
         const data = response.data;
         setUser(data.user);
-        localStorage.setItem("token", data.token); // Store token in local storage
+        localStorage.setItem("token", data.token);
         
-        // Clear form fields
         setFirstName('');
         setLastName('');
         setEmail('');
         setPassword('');
         
-        navigate('/home'); // Use lowercase navigate
+        navigate('/home');
       }
     } catch (error) {
       console.error('Registration error:', error.response?.data || error.message);
-      // Add error handling here if needed
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <div className="max-w-sm w-full bg-white rounded-2xl p-6">
-        {/* Logo */}
-         <Link to="/">
-        <div className="flex flex-col justify-center items-center mb-6 space-x-2">
-          <div className="flex justify-center items-center space-x-2">
-            <div className="w-10 h-10 bg-cyan-400 rounded-full flex items-center justify-center text-black font-bold text-sm">
-              ER
-            </div>
-            <h1 className="text-xl font-extrabold tracking-wide">EasyRide</h1>
-          </div>
-          <div className="w-full text-center mt-[-10px] ml-[-28px]">
-            <p className="text-xs text-gray-500">user</p>
-          </div>
-        </div>
-        </Link>
-        {/* Change title to Sign Up */}
+        <Logo userType="user" />
         <h2 className="text-2xl font-bold text-left text-gray-800 mb-4">Sign Up</h2>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Add name fields for signup */}
           <div>
             <label htmlFor="firstname" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
             <input
@@ -96,7 +77,6 @@ const UserSignup = () => {
             />
           </div>
 
-          {/* Update email and password fields */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
             <input
@@ -120,7 +100,6 @@ const UserSignup = () => {
             />
           </div>
 
-          {/* Change button text to Sign Up */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -131,14 +110,12 @@ const UserSignup = () => {
           </motion.button>
         </form>
 
-        {/* Update footer link to point to login */}
         <div className="flex justify-end items-right mt-4 text-[1.1rem] text-gray-500">
           <Link to='/userlogin'>
             <button className="font-normal text-indigo-600 hover:underline cursor-pointer">Login Instead</button>
           </Link>
         </div>
 
-        {/* Captain signup button */}
         <Link to="/captainsignup">
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -153,4 +130,4 @@ const UserSignup = () => {
   )
 }
 
-export default UserSignup
+export default UserSignup;

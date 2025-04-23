@@ -3,14 +3,16 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ArrowDown, MapPin, Navigation, Clock, Search, X } from 'lucide-react';
 import LocationSearchPannel from '../component/LocationSearchPannel';
-import Logo from './logo';
+import VehicleSelection from '../component/VehicleSelection';
 
-export default function Home() {
+export default function Home(props) {
   const [inputFocused, setInputFocused] = useState(false);
+  const [vehiclePanel, setVehiclePanel] = useState(false);
   const formRef = useRef(null);
   const lineRef = useRef(null);
   const arrowRef = useRef(null);
   const iconRef = useRef(null);
+  const vehiclePanelRef = useRef(null);
 
   useEffect(() => {
     // Animate line and arrow when component mounts
@@ -37,6 +39,21 @@ export default function Home() {
     });
   }, []);
 
+  useEffect(() => {
+    // Only animate vehicle panel when vehiclePanel state changes
+    if(vehiclePanel) {
+      gsap.to(vehiclePanelRef.current, {
+          transform: "translateY(0)",
+          duration: 0.5,
+      });
+    } else {
+      gsap.to(vehiclePanelRef.current, {
+          transform: "translateY(100%)",
+          duration: 0.5,
+      });
+    }
+  }, [vehiclePanel]); // Add vehiclePanel as dependency
+
   const handleFocus = () => {
     setInputFocused(true);
     gsap.to(formRef.current, {
@@ -55,10 +72,20 @@ export default function Home() {
     });
   };
 
+  const handleLocationSelect = () => {
+    setInputFocused(false);
+    setVehiclePanel(true);
+  };
+
+  const handleVehicleClose = () => {
+    setVehiclePanel(false);
+    setInputFocused(true);
+  };
+
   return (
     <div className="relative h-screen w-screen overflow-hidden">
-   
-      /* Background Image */
+  
+      {/* Background Image */}
         <div className="absolute inset-0 w-full h-full z-0">
           <img
             src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
@@ -132,23 +159,33 @@ export default function Home() {
            
           </div>
 
-          {inputFocused && (
+        </form>
+        {inputFocused && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
               className="mt-6 space-y-2"
             >
-              <div className="flex items-center px-3 py-2 backdrop-blur-sm rounded-xl 
-                hover:bg-gray-100/80 transition-all cursor-pointer">
-               
-                <p className="text-sm text-gray-600"><LocationSearchPannel/></p>
-              </div>
+                <LocationSearchPannel 
+                  setVehiclePanel={setVehiclePanel} 
+                  onLocationSelect={handleLocationSelect}
+                />
+             
              
             </motion.div>
           )}
-        </form>
       </motion.div>
+      {/* ride vehicle selection */}
+      <div ref={vehiclePanelRef} className='fixed bottom-0 translate-y-full w-full'>
+         <VehicleSelection 
+           setVehiclePanel={setVehiclePanel} 
+           onClose={handleVehicleClose}
+         />
+      </div>
+     
+   
+
     </div>
   );
 }

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, X } from 'lucide-react'; // Add X import
+import { Users, X } from 'lucide-react';
+import ConfirmRide from './ConfirmRide'; // Import ConfirmRide component
 
-const VehicleSelection = ({ setVehiclePanel }) => { // Add setVehiclePanel prop
+const VehicleSelection = ({ setVehiclePanel }) => {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
-  
+  const [showDetailsPanel, setShowDetailsPanel] = useState(false); // State to toggle details panel
+
   const vehicleRides = [
     {
       id: 1,
@@ -39,9 +41,17 @@ const VehicleSelection = ({ setVehiclePanel }) => { // Add setVehiclePanel prop
     setVehiclePanel(false);
   };
 
+  const handleConfirmRideClick = () => {
+    if (selectedVehicle) {
+      setShowDetailsPanel(true); // Show the details panel
+    }
+  };
+
+  const selectedVehicleDetails = vehicleRides.find(vehicle => vehicle.id === selectedVehicle);
+
   return (
     <div className="bg-white rounded-t-3xl shadow-lg p-4 z-50 relative">
-      {/* Add close button */}
+      {/* Close button */}
       <button 
         onClick={handleClose}
         className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -49,60 +59,69 @@ const VehicleSelection = ({ setVehiclePanel }) => { // Add setVehiclePanel prop
         <X size={24} className="text-gray-600" />
       </button>
 
-      <h3 className="text-lg font-semibold mb-4">Choose your ride</h3>
-      <div className="space-y-2">
-        {vehicleRides.map((vehicle) => (
-          <motion.div
-            key={vehicle.id}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setSelectedVehicle(vehicle.id)}
-            className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all
-              ${selectedVehicle === vehicle.id 
-                ? 'bg-black text-white' 
-                : 'hover:bg-gray-50 border border-gray-100'}`}
-          >
-            <div className="flex items-center space-x-4">
-              <div className="relative w-20 h-18 flex-shrink-0">
-                <img
-                  src={vehicle.image}
-                  alt={vehicle.name}
-                  className="rounded-xl object-contain"
-                  style={{ filter: selectedVehicle === vehicle.id ? 'brightness(0.8)' : 'none' }}
-                />
-                <div className={`absolute -bottom-1 -right-1 flex items-center text-xs px-1.5 py-0.5 rounded-full
+      {/* Main panel */}
+      {!showDetailsPanel ? (
+        <>
+          <h3 className="text-lg font-semibold mb-4">Choose your ride</h3>
+          <div className="space-y-2">
+            {vehicleRides.map((vehicle) => (
+              <motion.div
+                key={vehicle.id}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setSelectedVehicle(vehicle.id)}
+                className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all
                   ${selectedVehicle === vehicle.id 
-                    ? 'bg-white text-black' 
-                    : 'bg-gray-100 text-gray-600'}`}>
-                  <Users size={10} className="mr-0.5" />
-                  {vehicle.capacity}
+                    ? 'bg-black text-white' 
+                    : 'hover:bg-gray-50 border border-gray-100'}`}
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="relative w-20 h-18 flex-shrink-0">
+                    <img
+                      src={vehicle.image}
+                      alt={vehicle.name}
+                      className="rounded-xl object-contain"
+                      style={{ filter: selectedVehicle === vehicle.id ? 'brightness(0.8)' : 'none' }}
+                    />
+                    <div className={`absolute -bottom-1 -right-1 flex items-center text-xs px-1.5 py-0.5 rounded-full
+                      ${selectedVehicle === vehicle.id 
+                        ? 'bg-white text-black' 
+                        : 'bg-gray-100 text-gray-600'}`}>
+                      <Users size={10} className="mr-0.5" />
+                      {vehicle.capacity}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-[18px] font-semibold font-sans">{vehicle.name}</h4>
+                    <p className={`text-sm ${selectedVehicle === vehicle.id ? 'text-gray-300' : 'text-gray-500'}`}>
+                      {vehicle.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <h4 className="text-[18px] font-semibold font-sans">{vehicle.name}</h4>
-                <p className={`text-sm ${selectedVehicle === vehicle.id ? 'text-gray-300' : 'text-gray-500'}`}>
-                  {vehicle.description}
-                </p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="font-semibold pl-[10px]">₹{vehicle.price}</p>
-              <p className={`text-sm  ${selectedVehicle === vehicle.id ? 'text-gray-300' : 'text-gray-500'}`}>
-                {vehicle.time}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+                <div className="text-right">
+                  <p className="font-semibold pl-[10px]">₹{vehicle.price}</p>
+                  <p className={`text-sm  ${selectedVehicle === vehicle.id ? 'text-gray-300' : 'text-gray-500'}`}>
+                    {vehicle.time}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-      <button 
-        className={`w-full py-3 rounded-xl mt-4 font-medium transition-all
-          ${selectedVehicle 
-            ? 'bg-black text-white hover:bg-gray-900' 
-            : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
-      >
-        {selectedVehicle ? 'Confirm Ride' : 'Select a ride type'}
-      </button>
+          <button 
+            onClick={handleConfirmRideClick} // Add onClick handler
+            className={`w-full py-3 rounded-xl mt-4 font-medium transition-all
+              ${selectedVehicle 
+                ? 'bg-black text-white hover:bg-gray-900' 
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+          >
+            {selectedVehicle ? 'Confirm Ride' : 'Select a ride type'}
+          </button>
+        </>
+      ) : (
+        // Render ConfirmRide component with selected vehicle details
+        <ConfirmRide vehicle={selectedVehicleDetails} onBack={() => setShowDetailsPanel(false)} />
+      )}
     </div>
   );
 };
